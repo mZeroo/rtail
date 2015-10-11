@@ -2,13 +2,13 @@
 
 var io = require('socket.io-client')
 var config = require('./client-config.json')
-var agrs = process.argv.slice(2)
+var args = process.argv.slice(2)
 
 var tailRemoteLog = function(addr, options) {
   var socket = io.connect(addr, { 'timeout': 100, 'reconnectionAttempts': 2 })
 
   socket.on('connect', function () {
-    socket.emit('tail', agrs.slice(1).join(' '))
+    socket.emit('tail', args.slice(1).join(' '))
   })
 
   socket.on('sys', function(data) {
@@ -47,36 +47,47 @@ var fetchConfig = function(addr, callback) {
   })
 }
 
-// list all host: ./rtail.js -all
-if (agrs[0] == '-all') {
+var showHelp = function() {
+  console.log("Usage: ")
+  console.log("-all                           list all support host and logs")
+  console.log("-host                          list all support host")
+  console.log("<host> -log                    list all support logs of <host>")
+  console.log("<host> <tail-option> <log>     tail <log> on the <host>, <tail-option> can be any option support by tail")
+  console.log("--help                         list the help info")
+}
+
+if (args[0] == '--help') {
+  showHelp()
+  process.exit(-1)
+} else if (args[0] == '-all') {
   fetchConfig(config["config-server"], function(data) {
     console.log(data)
     process.exit(-1)
   })
-}
-
-// list all host: ./rtail.js -host
-if (agrs[0] == '-host') {
+} else if (args[0] == '-host') {
   fetchConfig(config["config-server"], function(data) {
     logConfig = eval(data)
     console.log("Surport hosts: \n" + Object.keys(logConfig).join("\n"))
     process.exit(-1)
   })
-}
-
-// list all host: ./rtail.js localbox -log
-if (agrs[1] == '-log') {
+} else if (args[1] == '-log') {
   fetchConfig(config["config-server"], function(logConfig) {
-    console.log("Surport logs: \n" + logConfig[agrs[0]]["logs"].join("\n"))
+    console.log("Surport logs: \n" + logConfig[args[0]]["logs"].join("\n"))
     process.exit(-1)
   })
+} else {
+  if (args.lenght != 3) {
+    console.log("option is incorrect.")
+    showHelp()
+    process.exit(-1)
+  }
+  
+  var hostname = args[0]
+  var options = args.slice[1]
+
+  fetchConfig(config["config-server"], function(logConfig) {
+    tailRemoteLog(logConfig[hostname]['addr'], options)
+  })
 }
-
-var hostname = agrs[0]
-var options = agrs.slice[1]
-
-fetchConfig(config["config-server"], function(logConfig) {
-  tailRemoteLog(logConfig[hostname]['addr'], options)
-})
 
 
