@@ -42,7 +42,8 @@ rtail contains three components：
                  +---------------------------------------------------------------------------+
                                              logs/socket.io                                   
                                                                                   
-	
+
+*More detail you can refer to [why rtail](http://mzeroo.github.io/2015/10/10/tail-f-log.html).*
 
 ### 2. ENV Install
 
@@ -75,7 +76,6 @@ rtail contains three components：
 		./server/rtail-server.js -p 8410
 		
 		
-
 ### 5. Slave Usage
 
 1. start
