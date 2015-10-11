@@ -76,12 +76,12 @@ if (args[0] == '--help') {
     process.exit(-1)
   })
 } else {
-  if (args.lenght != 3) {
+  if (args.length < 3) {
     console.log("option is incorrect.")
     showHelp()
     process.exit(-1)
   }
-  
+
   var hostname = args[0]
   var options = args.slice[1]
 

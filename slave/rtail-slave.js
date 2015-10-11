@@ -1,15 +1,19 @@
 #!/usr/bin/env node
 
+var _ = require("underscore")
+var S = require("underscore.string")
+
 var app = require('express')()
 var http = require('http').Server(app)
 var io = require('socket.io')(http)
 var ioClient = require('socket.io-client')
 var spawn = require('child_process').spawn
-var config = require('./server-config.json')
+var config = require('./slave-config.json')
 var premitedLogFiles = config["logs"]
 var os = require("os")
+
 var util = require("./utils")
-var argv = require('optimist').argv
+var port = require('optimist').argv.p || 8410
 
 var register = function() {
   var addr = config['config-server']
@@ -18,7 +22,7 @@ var register = function() {
   socket.on('connect', function() {
     var data = {}
     data["host"] = os.hostname()
-    data["addr"] = "http://" + util.localIpv4Address() + ":" + argv.p
+    data["addr"] = "http://" + util.localIpv4Address() + ":" + port
     data["logs"] = premitedLogFiles
     socket.emit('register', data)
     console.log("Register success: " + addr)
@@ -31,26 +35,13 @@ var register = function() {
 
 }
 
-var strNotStartsWith = function(strs, start) {
-  var result = []
-  for (var i in strs) {
-    if (strs[i].indexOf(start) != 0) {
-      result.push(strs[i])
-    }
-  }
-  return result
-}
-
 var translateLogs = function(logFiles) {
-  var dict = {}
-  for (var i in logFiles) {
-    for (var j in premitedLogFiles) {
-      if (util.endsWith(premitedLogFiles[j], logFiles[i])) {
-        dict[logFiles[i]] = premitedLogFiles[j]
-      }
-    }
-  }
-  return dict
+  var mapping = {}
+  _.each(logFiles, function(logFile) {
+    mappingFile = _.filter(premitedLogFiles, function(file) { return S(file).endsWith(logFile) })[0]
+    if (mappingFile) mapping[logFile] = mappingFile
+  })
+  return mapping
 }
 
 
@@ -62,20 +53,19 @@ io.on('connection', function(socket) {
   socket.on('tail', function(data) {
     var options = data.split(" ")
     
-    var logFiles = strNotStartsWith(options, '-')
-    var dict = translateLogs(logFiles)
-    var invalidLogs = util.arrDiff(logFiles, Object.keys(dict))
+    var logFiles = _.filter(options, function(p) { return !S(p).startsWith("-") } )
+    var logFileMapping = translateLogs(logFiles)
+    var invalidLogs = _.filter(logFiles, function(logFile) { return !(logFile in logFileMapping) })
 
     if (invalidLogs.length > 0) {
       socket.emit('sys', "Invalid logs:" + JSON.stringify(invalidLogs))
       socket.disconnect()
     }
 
-    for (var i in options) {
-      if (logFiles.indexOf(options[i]) >= 0) {
-        options[i] = dict[options[i]]
-      }
-    }
+    options = _.map(options, function(p) { 
+      if (p in logFileMapping) return logFileMapping[p]
+      else return p
+    })
 
     tail = spawn('tail', options)
     tail.stdout.setEncoding('utf8')
@@ -115,8 +105,6 @@ io.on('connection', function(socket) {
   })
 })
 
-
-var port = argv.p || 8410
 http.listen(port || 8411, function(){
   console.log("Listening on " + port)
   register()
