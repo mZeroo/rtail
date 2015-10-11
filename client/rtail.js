@@ -47,6 +47,15 @@ var fetchConfig = function(addr, callback) {
   })
 }
 
+// list all host: ./rtail.js -all
+if (agrs[0] == '-all') {
+  fetchConfig(config["config-server"], function(data) {
+    console.log(data)
+    process.exit(-1)
+  })
+}
+
+// list all host: ./rtail.js -host
 if (agrs[0] == '-host') {
   fetchConfig(config["config-server"], function(data) {
     logConfig = eval(data)
@@ -55,24 +64,19 @@ if (agrs[0] == '-host') {
   })
 }
 
-if (agrs[0] == '-all') {
-  fetchConfig(config["config-server"], function(data) {
-    console.log(data)
-    process.exit(-1)
-  })
-}
-
+// list all host: ./rtail.js localbox -log
 if (agrs[1] == '-log') {
   fetchConfig(config["config-server"], function(logConfig) {
     console.log("Surport logs: \n" + logConfig[agrs[0]]["logs"].join("\n"))
     process.exit(-1)
   })
-} else {
-  var hostname = agrs[0]
-  var options = agrs.slice[1]
-
-  fetchConfig(config["config-server"], function(logConfig) {
-    tailRemoteLog(logConfig[hostname]['addr'], options)
-  })
 }
+
+var hostname = agrs[0]
+var options = agrs.slice[1]
+
+fetchConfig(config["config-server"], function(logConfig) {
+  tailRemoteLog(logConfig[hostname]['addr'], options)
+})
+
 

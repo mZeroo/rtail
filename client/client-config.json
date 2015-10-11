@@ -1,3 +1,3 @@
 {
-	"config-server": "http://10.64.36.149:8411"
+	"config-server": "http://127.0.0.1:8411"
 }

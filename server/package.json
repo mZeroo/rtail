@@ -1,13 +1,11 @@
 {
-  "name": "rtail-server",
+  "name": "rtail-config",
   "version": "0.0.1",
-  "description": "rtail server",
+  "description": "config server for rtail",
   "dependencies": {
     "express": "^4.10.2",
     "node-cache": "^3.0.0",
     "optimist": "^0.6.1",
     "socket.io": "^1.3.7",
-    "socket.io-client": "^1.3.7",
-    "subprocess": "^0.3.0"
   }
 }
