@@ -115,8 +115,10 @@ io.on('connection', function(socket) {
   })
 })
 
-http.listen(argv.p, function(){
-  console.log("Listening on " + argv.p)
+
+var port = argv.p || 8410
+http.listen(port || 8411, function(){
+  console.log("Listening on " + port)
   register()
   setInterval(register, 30 * 1000)
 }).on("error", function(error) {

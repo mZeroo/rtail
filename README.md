@@ -73,11 +73,11 @@ rtail contains three components：
 
 1. start
 
-		./server/rtail-server.js -p 8410
-		
+		./server/rtail-server.js
+
 		
 ### 5. Slave Usage
 
 1. start
 
-		./config/rtail-slave -p 8411
+		./slave/rtail-slave.js

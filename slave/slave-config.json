@@ -1,6 +1,6 @@
 {
-	"logs": [
-		"/opt/logs/logs/error.log"
-	],
-	"config-server": "http://127.0.0.1:8411"
+  "logs": [
+    "/opt/logs/logs/error.log"
+  ],
+  "config-server": "http://127.0.0.1:8411"
 }

@@ -41,8 +41,9 @@ io.on('connection', function(socket) {
   
 })
 
-http.listen(argv.p, function() {
-  console.log("Listening on " + argv.p)
+var port = argv.p || 8411
+http.listen(port, function() {
+  console.log("Listening on " + port)
 }).on("error", function(error) {
   console.log(error)
 })
