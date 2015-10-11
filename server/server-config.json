@@ -1,0 +1,10 @@
+{
+	"logs": [
+		"/opt/logs/logs/tatooine-error.log",
+		"/opt/logs/logs/tatooine-warn.log",
+		"/opt/logs/logs/tatooine-info.log",
+		"/opt/logs/logs/ruleplatform-error.log",
+		"/opt/logs/logs/ruleplatform-warn.log"
+	],
+	"config-server": "http://10.64.36.149:8411"
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      setInterval(function(){ window.scrollTo(0, log.scrollHeight); }, 100);
+      var socket = io();
+      socket.on('connect', function(msg) {
+        socket.emit("ask-logs")
+      })
+
+      socket.on('ans-logs', function(msg) {
+        var log = document.getElementById('log')
+        log.scrollTop = log.scrollHeight
+        log.innerHTML += JSON.stringify(msg)
+      })
+    </script>
+  </head>
+  <body>
+    <div id="log"></div>
+  </body>
+</html>
