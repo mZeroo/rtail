@@ -105,7 +105,7 @@ io.on('connection', function(socket) {
   })
 })
 
-http.listen(port || 8411, function(){
+http.listen(port, function(){
   console.log("Listening on " + port)
   register()
   setInterval(register, 30 * 1000)
