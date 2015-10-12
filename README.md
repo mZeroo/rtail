@@ -1,4 +1,4 @@
-### 1. Introduce
+### 1. Introduction
 
 Tail remote log in your local box. For example, if you want to see the tatooine-error.log on the server01, you can run the command like this:
 
